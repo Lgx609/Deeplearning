@@ -1,0 +1,10 @@
+
+train: E:\data818\test_val_train\train\images
+val: E:\data818\test_val_train\val\images
+
+nc: 3
+
+names:
+  0: helmet
+  1: head
+  2: people
