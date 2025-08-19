@@ -113,7 +113,7 @@ class Detect(nn.Module):
 
     def forward(self, x):
         """
-        x 是一个列表，存放来自不同检测尺度的特征图
+        X 是一个列表，存放来自不同检测尺度的特征图
         Processes input through YOLOv5 layers, altering shape for detection: `x(bs, 3, ny, nx, 85)`.
         """
         z = []  # inference output
