@@ -2,12 +2,8 @@ path: C:\Users\12892\Desktop\balloons # dataset root dir
 train: train # train images (relative to 'path') 118287 images
 val: val # val images (relative to 'path') 5000 images
 
-
 nc: 2
 
 names:
   0: balloon
   1: airplane
-
-
-
