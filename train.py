@@ -38,7 +38,7 @@ import yaml
 from torch.optim import lr_scheduler
 from tqdm import tqdm
 
-os.environ['KMP_DUPLICATE_LIB_OK'] = 'TRUE'
+os.environ["KMP_DUPLICATE_LIB_OK"] = "TRUE"
 FILE = Path(__file__).resolve()
 ROOT = FILE.parents[0]  # YOLOv5 root directory
 if str(ROOT) not in sys.path:
@@ -569,7 +569,7 @@ def parse_opt(known=False):
     parser = argparse.ArgumentParser()
     parser.add_argument("--weights", type=str, default=ROOT / "yolov5s.pt", help="initial weights path")
     parser.add_argument("--cfg", type=str, default="models/yolov5s.yaml", help="model.yaml path")
-    parser.add_argument("--data", type=str, default= ROOT / "data/helmet.yaml", help="dataset.yaml path")
+    parser.add_argument("--data", type=str, default=ROOT / "data/helmet.yaml", help="dataset.yaml path")
     parser.add_argument("--hyp", type=str, default=ROOT / "data/hyps/hyp.scratch-low.yaml", help="hyperparameters path")
     parser.add_argument("--epochs", type=int, default=10, help="total training epochs")
     parser.add_argument("--batch-size", type=int, default=8, help="total batch size for all GPUs, -1 for autobatch")
