@@ -81,53 +81,38 @@ class Detect(nn.Module):
         super().__init__()
         self.nc = nc  # number of classes
         self.no = nc + 5  # number of outputs per anchor(x,y,w,h,confidence)
-        """
-        anchors = [
-        [10,13,16,30,33,23],  # 第 1 层，3 个 anchor（每个 2 个值）
-        [30,61,62,45,59,119], # 第 2 层，3 个 anchor
-        [116,90,156,198,373,326]  # 第 3 层，3 个 anchor
-        ]
+        """Anchors = [ [10,13,16,30,33,23],  # 第 1 层，3 个 anchor（每个 2 个值） [30,61,62,45,59,119], # 第 2 层，3 个 anchor
+        [116,90,156,198,373,326]  # 第 3 层，3 个 anchor ]
         """
         self.nl = len(anchors)  # 3,number of detection layers：检测层数
-        """anchors 有时会被展平成 [w1,h1,w2,h2,...] 的形式，而不是 [ [w,h], [w,h], ...]。除以2就是实际anchor数量"""
+        """Anchors 有时会被展平成 [w1,h1,w2,h2,...] 的形式，而不是 [ [w,h], [w,h], ...]。除以2就是实际anchor数量."""
         self.na = len(anchors[0]) // 2  # 每一层锚框数量number of anchors：整除（向下取整），结果是整型变量
-        """
-        _ 只是占位符，表示我们重复生成"torch.empty(0)"self.nl次。
-        初始化为空 tensor，是为了后面在 forward 中动态生成网格坐标（每个格子中心的 (x, y) 坐标）。
-        这样写是占位，保证 self.grid[i] 可以在 forward 时直接赋值
+        """_ 只是占位符，表示我们重复生成"torch.empty(0)"self.nl次。 初始化为空 tensor，是为了后面在 forward 中动态生成网格坐标（每个格子中心的 (x, y) 坐标）。 这样写是占位，保证
+        self.grid[i] 可以在 forward 时直接赋值.
         """
         self.grid = [torch.empty(0) for _ in range(self.nl)]  # init grid:每个检测层的特征图网格（grid）。
         self.anchor_grid = [torch.empty(0) for _ in range(self.nl)]  # init anchor grid:每个检测层的 anchor 网格。
-        """
-        注册一个持久化缓冲区anchors，用于存储锚框坐标，存每层的“网格坐标”
-        将锚框数据转换为张量并调整形状为(nl, na, 2)，其中nl是检测头数量，na是每个网格的锚框数量，2代表锚框的宽高
-        """
+        """注册一个持久化缓冲区anchors，用于存储锚框坐标，存每层的“网格坐标” 将锚框数据转换为张量并调整形状为(nl, na, 2)，其中nl是检测头数量，na是每个网格的锚框数量，2代表锚框的宽高."""
         self.register_buffer("anchors", torch.tensor(anchors).float().view(self.nl, -1, 2))  # shape(nl,na,2)
-        """
-        可以通过 self.m[0]、for layer in self.m: 来访问每个卷积层。
-        对每个 x 生成一个卷积层对象。
-        ch 里每个值代表一个检测层输入的通道数。比如不同尺寸对应不同的通道数eg:[256,512,1024]
+        """可以通过 self.m[0]、for layer in self.m: 来访问每个卷积层。 对每个 x 生成一个卷积层对象。 ch
+        里每个值代表一个检测层输入的通道数。比如不同尺寸对应不同的通道数eg:[256,512,1024]
         """
         self.m = nn.ModuleList(nn.Conv2d(x, self.no * self.na, 1) for x in ch)  # output conv
         self.inplace = inplace  # use inplace ops (e.g. slice assignment)
 
     def forward(self, x):
-        """
-        x 是一个列表，存放来自不同检测尺度的特征图
-        Processes input through YOLOv5 layers, altering shape for detection: `x(bs, 3, ny, nx, 85)`.
+        """X 是一个列表，存放来自不同检测尺度的特征图 Processes input through YOLOv5 layers, altering shape for detection: `x(bs, 3, ny, nx,
+        85)`.
         """
         z = []  # inference output
-
         """x[i] = self.m[i](x[i])：将第i个尺度的特征图传入对应的卷积层（self.m[i]）进行处理，提取更高级的特征。 """
         for i in range(self.nl):
             x[i] = self.m[i](x[i])  # conv
-            """获取处理后特征图的形状信息，其中bs是批量大小，ny和nx是特征图的高度和宽度"""
+            """获取处理后特征图的形状信息，其中bs是批量大小，ny和nx是特征图的高度和宽度."""
             bs, _, ny, nx = x[i].shape  # x(bs,255,20,20) to x(bs,3,20,20,85)
             """调整维度顺序为 (批量大小，锚框数量，高度，宽度，输出维度)"""
-            """contiguous()：
-            确保调整维度后的张量在内存中连续存储，为后续计算（如 reshape）提供内存布局保障"""
+            """Contiguous()： 确保调整维度后的张量在内存中连续存储，为后续计算（如 reshape）提供内存布局保障."""
             x[i] = x[i].view(bs, self.na, self.no, ny, nx).permute(0, 1, 3, 4, 2).contiguous()
-
             """训练与推理区别：
             训练时直接使用原始输出计算损失
             推理时需要解码为实际坐标和类别概率"""

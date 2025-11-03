@@ -1,8 +1,8 @@
 # 作者：CSDN-笑脸惹桃花 https://blog.csdn.net/qq_67105081?type=blog
 # github:peng-xiaobai https://github.com/peng-xiaobai/Dataset-Conversion
 import os
-import shutil
 import random
+import shutil
 
 
 # random.seed(0)  #随机种子，可自选开启
@@ -26,16 +26,16 @@ def split_data(file_path, label_path, new_file_path, train_rate, val_rate, test_
 
     random.shuffle(matched_data)
     total = len(matched_data)
-    train_data = matched_data[:int(train_rate * total)]
-    val_data = matched_data[int(train_rate * total):int((train_rate + val_rate) * total)]
-    test_data = matched_data[int((train_rate + val_rate) * total):]
+    train_data = matched_data[: int(train_rate * total)]
+    val_data = matched_data[int(train_rate * total) : int((train_rate + val_rate) * total)]
+    test_data = matched_data[int((train_rate + val_rate) * total) :]
 
     # 处理训练集
     for img_name, img_file, label_file in train_data:
         old_img_path = os.path.join(file_path, img_file)
         old_label_path = os.path.join(label_path, label_file)
-        new_img_dir = os.path.join(new_file_path, 'train', 'images')
-        new_label_dir = os.path.join(new_file_path, 'train', 'labels')
+        new_img_dir = os.path.join(new_file_path, "train", "images")
+        new_label_dir = os.path.join(new_file_path, "train", "labels")
         os.makedirs(new_img_dir, exist_ok=True)
         os.makedirs(new_label_dir, exist_ok=True)
         shutil.copy(old_img_path, os.path.join(new_img_dir, img_file))
@@ -44,8 +44,8 @@ def split_data(file_path, label_path, new_file_path, train_rate, val_rate, test_
     for img_name, img_file, label_file in val_data:
         old_img_path = os.path.join(file_path, img_file)
         old_label_path = os.path.join(label_path, label_file)
-        new_img_dir = os.path.join(new_file_path, 'val', 'images')
-        new_label_dir = os.path.join(new_file_path, 'val', 'labels')
+        new_img_dir = os.path.join(new_file_path, "val", "images")
+        new_label_dir = os.path.join(new_file_path, "val", "labels")
         os.makedirs(new_img_dir, exist_ok=True)
         os.makedirs(new_label_dir, exist_ok=True)
         shutil.copy(old_img_path, os.path.join(new_img_dir, img_file))
@@ -54,8 +54,8 @@ def split_data(file_path, label_path, new_file_path, train_rate, val_rate, test_
     for img_name, img_file, label_file in test_data:
         old_img_path = os.path.join(file_path, img_file)
         old_label_path = os.path.join(label_path, label_file)
-        new_img_dir = os.path.join(new_file_path, 'test', 'images')
-        new_label_dir = os.path.join(new_file_path, 'test', 'labels')
+        new_img_dir = os.path.join(new_file_path, "test", "images")
+        new_label_dir = os.path.join(new_file_path, "test", "labels")
         os.makedirs(new_img_dir, exist_ok=True)
         os.makedirs(new_label_dir, exist_ok=True)
         shutil.copy(old_img_path, os.path.join(new_img_dir, img_file))
@@ -63,8 +63,8 @@ def split_data(file_path, label_path, new_file_path, train_rate, val_rate, test_
     print("数据集已划分完成")
 
 
-if __name__ == '__main__':
+if __name__ == "__main__":
     file_path = r"E:\data818\images"  # 图片文件夹
-    label_path = r'E:\data818\labels'  # 标签文件夹
+    label_path = r"E:\data818\labels"  # 标签文件夹
     new_file_path = r"E:\data818\test_val_train"  # 新数据存放位置
     split_data(file_path, label_path, new_file_path, train_rate=0.8, val_rate=0.2, test_rate=0.0)

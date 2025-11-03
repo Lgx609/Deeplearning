@@ -149,10 +149,8 @@ def run(
         ```
     """
     source = str(source)
-    """
-    整体逻辑：当 “允许保存”并且“数据源不是文本文件” 时，save_img 为 True（需要保存图像）；否则为 False（不保存）。
-    filename = "document.txt"
-    print(filename.endswith(".txt"))  # 输出 True，因为字符串以".txt"结尾
+    """整体逻辑：当 “允许保存”并且“数据源不是文本文件” 时，save_img 为 True（需要保存图像）；否则为 False（不保存）。 filename = "document.txt"
+    print(filename.endswith(".txt"))  # 输出 True，因为字符串以".txt"结尾.
     """
     save_img = not nosave and not source.endswith(".txt")  # save inference images
 
@@ -371,11 +369,22 @@ def parse_opt():
         args = YOLOv5.parse_opt()
         ```
     """
-    """在这里面该参数，然后再用run(**vars(opt))去调用这里的参数，run里面的是初始化，都是形参加默认值"""
+    """在这里面该参数，然后再用run(**vars(opt))去调用这里的参数，run里面的是初始化，都是形参加默认值."""
     parser = argparse.ArgumentParser()
-    parser.add_argument("--weights", nargs="+", type=str, default="E:\\yolov5-master\\yolov5\\yolov5s.pt", help="model path or triton URL")
-    parser.add_argument("--source", type=str, default="C:\\Users\\12892\\Desktop\\balloons\\val\\images", help="file/dir/URL/glob/screen/0(webcam)")
-    #parser.add_argument('--source', type=str, default=ROOT / 'data/videos/test.mp4', help='file/dir/URL/glob/screen/0(webcam)')
+    parser.add_argument(
+        "--weights",
+        nargs="+",
+        type=str,
+        default="E:\\yolov5-master\\yolov5\\yolov5s.pt",
+        help="model path or triton URL",
+    )
+    parser.add_argument(
+        "--source",
+        type=str,
+        default="C:\\Users\\12892\\Desktop\\balloons\\val\\images",
+        help="file/dir/URL/glob/screen/0(webcam)",
+    )
+    # parser.add_argument('--source', type=str, default=ROOT / 'data/videos/test.mp4', help='file/dir/URL/glob/screen/0(webcam)')
     parser.add_argument("--data", type=str, default=ROOT / "data/lgx812.yaml", help="(optional) dataset.yaml path")
     parser.add_argument("--imgsz", "--img", "--img-size", nargs="+", type=int, default=[640], help="inference size h,w")
     parser.add_argument("--conf-thres", type=float, default=0.25, help="confidence threshold")
@@ -438,7 +447,7 @@ def main(opt):
     ```
     """
     check_requirements(ROOT / "requirements.txt", exclude=("tensorboard", "thop"))
-    """一行代码传递所有参数"""
+    """一行代码传递所有参数."""
     run(**vars(opt))
 
 
